@@ -28,6 +28,7 @@ router.post("/google", async (req,res) => {
                 name,
                 email,
                 provider:"google",
+                password:"Google_Auth",
             });
         }
 

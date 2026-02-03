@@ -16,7 +16,14 @@ const userSchema = new mongoose.Schema(
         },
         password:{
             type:String,
-            enum:["local","google"],
+            required: function(){
+                return this.provider == "local";
+            },
+        },
+
+        provider: {
+            type: String,
+            enum: ["local","google"],
             default:"local",
         },
     },
