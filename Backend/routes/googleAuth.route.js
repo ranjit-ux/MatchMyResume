@@ -1,48 +1,75 @@
 import express from "express";
-import jwt from "jsonwebtoken"
-import {OAuth2Client} from "google-auth-library"
+import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
 import User from "../models/User.js";
 
 const router = express.Router();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-router.post("/google", async (req,res) => {
-    try{
-        const {token} = req.body;
+/**
+ * STEP 1: Redirect user to Google
+ */
+router.get("/google", (req, res) => {
+  const redirectUrl =
+    "https://accounts.google.com/o/oauth2/v2/auth?" +
+    new URLSearchParams({
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      redirect_uri:
+        "https://matchmyresume-k5l.onrender.com/api/auth/google/callback",
+      response_type: "code",
+      scope: "openid email profile",
+      prompt: "consent",
+    });
 
-        if(!token){
-            return res.status(400).json({message:"No token provided"});
-        }
+  res.redirect(redirectUrl);
+});
 
-        const ticket = await client.verifyIdToken({
-            idToken:token,
-            audience:process.env.GOOGLE_CLIENT_ID,
-        });
+/**
+ * STEP 2: Google redirects back here
+ */
+router.get("/google/callback", async (req, res) => {
+  try {
+    const { code } = req.query;
 
-        const {name,email}=ticket.getPayload();
+    const { tokens } = await client.getToken({
+      code,
+      redirect_uri:
+        "https://matchmyresume-k5l.onrender.com/api/auth/google/callback",
+    });
 
-        let user = await User.findOne({email});
+    const ticket = await client.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
 
-        if(!user){
-            user = await User.create({
-                name,
-                email,
-                provider:"google",
-                password:"Google_Auth",
-            });
-        }
+    const { name, email } = ticket.getPayload();
 
-        const jwtToken = jwt.sign(
-            {id:user._id},
-            process.env.JWT_SECRET,
-            {expiresIn:"7d"}
-        );
+    let user = await User.findOne({ email });
 
-        res.status(200).json({token:jwtToken});
-    }catch(err){
-        console.error("Google auth error:", err);
-        res.status(401).json({message:"Google authentication failed"});
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        password: "google", // dummy
+      });
     }
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // ✅ redirect back to frontend WITH token
+    res.redirect(
+      `https://matchmyresume-frontend.onrender.com/login?token=${token}`
+    );
+  } catch (err) {
+    console.error("Google OAuth error:", err);
+    res.redirect(
+      "https://matchmyresume-frontend.onrender.com/login?error=google"
+    );
+  }
 });
 
 export default router;
