@@ -36,10 +36,10 @@ const Signup = () => {
   };
 
   // ✅ NEW: redirect-based Google signup
-  const handleGoogleSignup = () => {
-    window.location.href =
-      "https://matchmyresume-kl5l.onrender.com/api/auth/google";
-  };
+    const handleGoogleSignup = () => {
+      window.location.href =
+        "https://matchmyresume-kl5l.onrender.com/api/auth/google";
+    };
 
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-gray-100">

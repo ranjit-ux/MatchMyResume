@@ -15,7 +15,7 @@ router.get("/google", (req, res) => {
     new URLSearchParams({
       client_id: process.env.GOOGLE_CLIENT_ID,
       redirect_uri:
-        "https://matchmyresume-k5l.onrender.com/api/auth/google/callback",
+        "https://matchmyresume-kl5l.onrender.com/api/auth/google/callback",
       response_type: "code",
       scope: "openid email profile",
       prompt: "consent",
@@ -34,7 +34,7 @@ router.get("/google/callback", async (req, res) => {
     const { tokens } = await client.getToken({
       code,
       redirect_uri:
-        "https://matchmyresume-k5l.onrender.com/api/auth/google/callback",
+        "https://matchmyresume-kl5l.onrender.com/api/auth/google/callback",
     });
 
     const ticket = await client.verifyIdToken({
