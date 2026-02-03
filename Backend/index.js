@@ -14,13 +14,17 @@ import resultRoutes from "./routes/result.route.js"
 const app = express();
 
 // middleware
-app.use(cors({
-  origin:[
-    "http://localhost:5173",
-    "https://match-my-resume.com",
-  ],
-  credentials:true,
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://matchmyresume-frontend.onrender.com"
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(express.json());
 
@@ -115,6 +119,6 @@ app.use("/api/auth",googleAuthRoutes);
 
 
 const PORT = process.env.PORT || 5000;
-app.listen(5000, () => {
+app.listen(PORT, () => {
   console.log( `Server running on port ${PORT}`);
 });

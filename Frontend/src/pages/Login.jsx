@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../api/axios";
-import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -9,6 +8,17 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  // ✅ NEW: handle Google redirect token
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token) {
+      localStorage.setItem("token", token);
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -31,21 +41,10 @@ const Login = () => {
     }
   };
 
-  const handleGoogleSuccess = async (res) => {
-    try{
-      setLoading(true);
-      const response = await api.post("/api/auth/google", {
-        token: res.credential,
-      });
-
-      localStorage.setItem("token",response.data.token);
-      navigate("/");
-    }catch(err){
-      console.error(err);
-      alert("Google login failed");
-    }finally{
-      setLoading(false);
-    }
+  // ✅ NEW: redirect-based Google login
+  const handleGoogleLogin = () => {
+    window.location.href =
+      "https://matchmyresume-kl5l.onrender.com/api/auth/google";
   };
 
   return (
@@ -55,20 +54,19 @@ const Login = () => {
           Welcome to MMR
         </h2>
 
-        <form 
+        <form
           onSubmit={(e) => {
             e.preventDefault();
             handleLogin();
           }}
           className="space-y-4"
         >
-
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full border rounded-lg px-4 py-2"
           />
 
           <input
@@ -76,39 +74,41 @@ const Login = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full border rounded-lg px-4 py-2"
           />
 
           <button
-            onClick={handleLogin}
+            type="submit"
             disabled={loading}
-            className="w-full bg-[#2563EB] text-white font-semibold py-2 rounded-lg hover:bg-[#1D4ED8] transition disabled:opacity-60"
+            className="w-full bg-[#2563EB] text-white py-2 rounded-lg"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
 
-          <p className="mt-4 text-center text-sm text-gray-600">
+          <p className="text-center text-sm">
             First time to MMR?{" "}
             <span
               onClick={() => navigate("/signup")}
-              className="text-[#2563EB] font-medium cursor-pointer hover:underline"
+              className="text-blue-600 cursor-pointer"
             >
               Click here
             </span>
           </p>
         </form>
+
         <div className="flex items-center my-6">
           <div className="flex-1 h-px bg-gray-300" />
-          <span className="px-3 text-gray-500 text-sm">OR</span>
+          <span className="px-3 text-gray-500">OR</span>
           <div className="flex-1 h-px bg-gray-300" />
         </div>
 
-        <div className="flex justify-center">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => console.log("Google Login Failed")}
-          />
-        </div>
+        {/* ✅ NEW Google button */}
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full border py-2 rounded-lg flex justify-center items-center gap-2"
+        >
+          Sign in with Google
+        </button>
       </div>
     </div>
   );

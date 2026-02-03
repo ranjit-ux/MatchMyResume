@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { GoogleLogin } from "@react-oauth/google";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
@@ -12,49 +11,34 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
-  try {
-    setLoading(true);
+    if (!fullName || !email || !password) {
+      alert("All fields are required");
+      return;
+    }
 
-    const res = await api.post("/signup", {
-      name: fullName,
-      email,
-      password,
-    });
-
-    // ✅ auto-login
-    localStorage.setItem("token", res.data.token);
-
-    // ✅ auto-create profile with name
-    // await api.put("/", {
-    //   name: fullName,
-    // });
-
-    navigate("/");
-
-  } catch (err) {
-    alert(err.response?.data?.message || "Signup failed");
-    console.error(err);
-  } finally {
-    setLoading(false);
-  }
-};
-
-  const handleGoogleSuccess = async (res) => {
-    try{
+    try {
       setLoading(true);
 
-      const response = await api.post("/api/auth/google", {
-        token: res.credential,
+      const res = await api.post("/signup", {
+        name: fullName,
+        email,
+        password,
       });
 
-      localStorage.setItem("token",response.data.token);
+      localStorage.setItem("token", res.data.token);
       navigate("/");
-    }catch(err){
+    } catch (err) {
+      alert(err.response?.data?.message || "Signup failed");
       console.error(err);
-      alert("Google signup failed");
-    }finally{
+    } finally {
       setLoading(false);
     }
+  };
+
+  // ✅ NEW: redirect-based Google signup
+  const handleGoogleSignup = () => {
+    window.location.href =
+      "https://matchmyresume-kl5l.onrender.com/api/auth/google";
   };
 
   return (
@@ -76,7 +60,7 @@ const Signup = () => {
             placeholder="Full Name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full border rounded-lg px-4 py-2"
           />
 
           <input
@@ -84,7 +68,7 @@ const Signup = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full border rounded-lg px-4 py-2"
           />
 
           <input
@@ -92,22 +76,22 @@ const Signup = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full border rounded-lg px-4 py-2"
           />
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#2563EB] text-white font-semibold py-2 rounded-lg hover:bg-[#1D4ED8] transition disabled:opacity-60"
+            className="w-full bg-[#2563EB] text-white py-2 rounded-lg"
           >
             {loading ? "Signing up..." : "Signup"}
           </button>
 
-          <p className="mt-4 text-center text-sm text-gray-600">
+          <p className="text-center text-sm">
             Already have an account?{" "}
             <span
               onClick={() => navigate("/login")}
-              className="text-[#2563EB] font-medium cursor-pointer hover:underline"
+              className="text-blue-600 cursor-pointer"
             >
               Click here
             </span>
@@ -116,16 +100,17 @@ const Signup = () => {
 
         <div className="flex items-center my-6">
           <div className="flex-1 h-px bg-gray-300" />
-          <span className="px-3 text-gray-500 text-sm">OR</span>
+          <span className="px-3 text-gray-500">OR</span>
           <div className="flex-1 h-px bg-gray-300" />
         </div>
 
-        <div className="flex justify-center">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => console.log("Google Login Failed")}
-          />
-        </div>
+        {/* ✅ NEW Google button */}
+        <button
+          onClick={handleGoogleSignup}
+          className="w-full border py-2 rounded-lg flex justify-center items-center gap-2"
+        >
+          Sign up with Google
+        </button>
       </div>
     </div>
   );
