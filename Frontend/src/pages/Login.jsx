@@ -2,7 +2,7 @@ import { useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({setIsAuth}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,14 +17,12 @@ const Login = () => {
 
     try {
       setLoading(true);
-
       const res = await api.post("/login", { email, password });
-
       localStorage.setItem("token", res.data.token);
+      setIsAuth(true);
       navigate("/");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -79,12 +77,6 @@ const Login = () => {
             </span>
           </p>
         </form>
-
-        <div className="flex items-center my-6">
-          <div className="flex-1 h-px bg-gray-300" />
-          <span className="px-3 text-gray-500">OR</span>
-          <div className="flex-1 h-px bg-gray-300" />
-        </div>
 
       </div>
     </div>

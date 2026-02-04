@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../api/axios";
 import PdfThumbnail from "../components/PdfThumbnail";
-const Home = ({ onAnalyze }) => {
+const Home = ({ onAnalyzeStart, onAnalyzeComplete }) => {
   const [resume, setResume] = useState(null);
   const [jd, setJd] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
@@ -26,10 +26,15 @@ const handleAnalyze = async () => {
     formData.append("thumbnail",thumbnail);
   }
 
-  const res = await api.post("/api/analyze",formData);
-  console.log("Backend Responded");
+  onAnalyzeStart();
 
-  onAnalyze(res.data);
+  try{
+    const res = await api.post("/api/analyze", formData);
+    onAnalyzeComplete(res.data);
+  }
+  catch(err){
+    alert("Analysis Failed");
+  }
 
 };
 

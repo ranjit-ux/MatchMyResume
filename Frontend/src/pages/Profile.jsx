@@ -31,11 +31,6 @@ const Profile = () => {
     fetchData();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.clear();
-    navigate("/");
-  };
 
   const handleDelete = async (id) => {
     const confirm = window.confirm("Delete this analysis?");
@@ -69,13 +64,6 @@ const Profile = () => {
             <h1 className="text-2xl font-bold">{profile?.name}</h1>
             <p className="text-gray-500">{profile?.email}</p>
           </div>
-
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-          >
-            Logout
-          </button>
         </div>
 
         {/* ANALYSIS HISTORY */}

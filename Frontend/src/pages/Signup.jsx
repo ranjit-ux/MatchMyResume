@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
-const Signup = () => {
+const Signup = ({setIsAuth}) => {
   const navigate = useNavigate();
 
   const [fullName, setFullName] = useState("");
@@ -26,6 +26,7 @@ const Signup = () => {
       });
 
       localStorage.setItem("token", res.data.token);
+      setIsAuth(true);
       navigate("/");
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
@@ -92,12 +93,6 @@ const Signup = () => {
             </span>
           </p>
         </form>
-
-        <div className="flex items-center my-6">
-          <div className="flex-1 h-px bg-gray-300" />
-          <span className="px-3 text-gray-500">OR</span>
-          <div className="flex-1 h-px bg-gray-300" />
-        </div>
 
       </div>
     </div>

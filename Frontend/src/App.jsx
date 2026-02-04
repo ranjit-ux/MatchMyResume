@@ -34,13 +34,14 @@ const AppLayout = () => {
           <Route
             path="/"
             element={
-              <Home
-                onAnalyze={(data) => {
-                  sessionStorage.setItem(
-                    "analysis",
-                    JSON.stringify(data)
-                  );
+              <Home 
+                onAnalyzeStart={() => {
                   setLoading(true);
+                }}
+                onAnalyzeComplete={(data) => {
+                  sessionStorage.setItem("analysis",JSON.stringify(data));
+                  navigate("/result", {state:data});
+                  setLoading(false);
                 }}
               />
             }
@@ -85,15 +86,7 @@ const AppLayout = () => {
         {/* LOADER OVERLAY */}
         {loading && (
           <div className="absolute inset-0 z-40 bg-black/40">
-            <Loader
-              onDone={() => {
-                setLoading(false);
-                const data = JSON.parse(
-                  sessionStorage.getItem("analysis")
-                );
-                navigate("/result", { state: data });
-              }}
-            />
+            <Loader/>
           </div>
         )}
       </div>

@@ -1,18 +1,10 @@
-import { useEffect } from "react";
 
-const Loader = ({ onDone }) => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onDone();
-    }, 2500);
-
-    return () => clearTimeout(timer);
-  }, [onDone]);
-
+const Loader = () => {
   return (
-    <div className="absolute inset-0 bg-white/80 backdrop-blur-sm
-                    flex flex-col items-center justify-center z-50">
-
+    <div
+      className="absolute inset-0 bg-white/80 backdrop-blur-sm
+                 flex flex-col items-center justify-center z-50"
+    >
       {/* Sequential Bars */}
       <div className="flex gap-2 mb-6">
         <span className="w-2 h-8 bg-blue-600 rounded animate-scan"></span>
