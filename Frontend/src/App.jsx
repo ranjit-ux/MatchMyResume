@@ -21,7 +21,7 @@ const AppLayout = () => {
   const [loading, setLoading] = useState(false);
 
   const [isAuth, setIsAuth] = useState(() => 
-    !!localStorage.setItem("token")
+    !!localStorage.getItem("token")
   );
 
   return (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
@@ -8,17 +8,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
-  // ✅ NEW: handle Google redirect token
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-
-    if (token) {
-      localStorage.setItem("token", token);
-      navigate("/");
-    }
-  }, [navigate]);
 
   const handleLogin = async () => {
     if (!email || !password) {
