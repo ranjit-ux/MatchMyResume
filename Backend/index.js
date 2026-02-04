@@ -115,8 +115,6 @@ app.use("/api/result",resultRoutes);
 
 // app.use("/uploads",express.static("uploads"));
 
-app.use("/api/auth",googleAuthRoutes);
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

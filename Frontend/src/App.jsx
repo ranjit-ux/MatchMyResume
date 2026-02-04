@@ -20,18 +20,9 @@ const AppLayout = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const [isAuth, setIsAuth] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tokenFromUrl = params.get("token");
-
-    if (tokenFromUrl) {
-      localStorage.setItem("token", tokenFromUrl);
-      window.history.replaceState({}, "", "/");
-      return true;
-    }
-
-    return !!localStorage.getItem("token");
-  });
+  const [isAuth, setIsAuth] = useState(() => 
+    !!localStorage.setItem("token")
+  );
 
   return (
     <div className="h-screen flex flex-col bg-slate-50">

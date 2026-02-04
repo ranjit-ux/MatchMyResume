@@ -41,11 +41,6 @@ const Login = () => {
     }
   };
 
-  // ✅ NEW: redirect-based Google login
-    const handleGoogleLogin = () => {
-      window.location.href =
-        "https://matchmyresume-kl5l.onrender.com/api/auth/google";
-    };
 
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
@@ -102,13 +97,6 @@ const Login = () => {
           <div className="flex-1 h-px bg-gray-300" />
         </div>
 
-        {/* ✅ NEW Google button */}
-        <button
-          onClick={handleGoogleLogin}
-          className="w-full border py-2 rounded-lg flex justify-center items-center gap-2"
-        >
-          Sign in with Google
-        </button>
       </div>
     </div>
   );
