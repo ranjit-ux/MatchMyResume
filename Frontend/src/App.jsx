@@ -20,11 +20,13 @@ const AppLayout = () => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
 
-    if(token){
-      localStorage.setItem("token",token);
-      window.history.replaceState({},"","/");
+    if (token) {
+      localStorage.setItem("token", token);
+
+      // remove token from URL (clean)
+      window.history.replaceState({}, "", "/");
     }
-  },[]);
+  }, []);
 
   return (
     <div className="h-screen flex flex-col bg-slate-50">
