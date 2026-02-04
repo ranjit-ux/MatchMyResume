@@ -62,12 +62,12 @@ router.get("/google/callback", async (req, res) => {
 
     // ✅ redirect back to frontend WITH token
     res.redirect(
-      `https://matchmyresume-frontend.onrender.com/login?token=${token}`
+      `https://matchmyresume-frontend.onrender.com/?token=${token}`
     );
   } catch (err) {
     console.error("Google OAuth error:", err);
     res.redirect(
-      "https://matchmyresume-frontend.onrender.com/login?error=google"
+      "https://matchmyresume-frontend.onrender.com/?error=google"
     );
   }
 });

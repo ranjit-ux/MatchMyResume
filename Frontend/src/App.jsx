@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -16,6 +16,15 @@ const AppLayout = () => {
   const navigate = useNavigate();  
   const token = localStorage.getItem("token");
  
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if(token){
+      localStorage.setItem("token",token);
+      window.history.replaceState({},"","/");
+    }
+  },[]);
 
   return (
     <div className="h-screen flex flex-col bg-slate-50">
